@@ -9,6 +9,7 @@ public class InternTrack {
     public static void main(String[] args) {
         ArrayList<Application> userApplications = new ArrayList<>();
         Storage.loadApplications(userApplications);
+        Ui.printWelcome();
         String line = Ui.readCommand();
         while (!line.equals(BYE_COMMAND)) {
             Ui.printBorder();
@@ -21,13 +22,12 @@ public class InternTrack {
 
     private static void handleCommand(String line, ArrayList<Application> userApplications) {
         try {
-           if (line.startsWith(ADD_COMMAND)) {
-               ApplicationList.addApplications(userApplications, line);
-               Storage.saveApplications(userApplications);
-           }
+            if (line.startsWith(ADD_COMMAND)) {
+                ApplicationList.addApplications(userApplications, line);
+                Storage.saveApplications(userApplications);
+            }
         } catch (InternTrackException e) {
             System.out.println(e.getMessage());
         }
     }
 }
-

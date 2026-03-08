@@ -32,11 +32,14 @@ public class Storage {
             }
             Scanner s = new Scanner(f);
             //read lines from text file
-            //while loop means as long as there is more data to be read, ie as long as there are more lines in the text file, keep reading and converting to Task objects
+            //while loop means as long as there is more data to be read
+            //ie as long as there are more lines in the text file,
+            //keep reading and converting to Task objects
             while (s.hasNext()) {
                 //Reads one full line from the text file
                 String line = s.nextLine();
-                Application t = parseFileString(line); // Convert text back to object
+                //Convert text back to object
+                Application t = parseFileString(line);
                 if (t != null) {
                     userApplications.add(t);
                 }
@@ -56,10 +59,16 @@ public class Storage {
         String[] parts = line.split("\\|");
         String company = parts[0];
         String role = parts[1];
-        LocalDate deadline = LocalDate.parse(parts[2]);
+        LocalDate deadline = null;
+        if (!parts[2].equals("null") && !parts[2].isEmpty()) {
+            deadline = LocalDate.parse(parts[2]);
+        }
         String contact = parts[3];
         String status = parts[4];
-        return new Application(company, role, deadline, contact);
+        Application app = new Application(company, role, deadline, contact);
+        // Preserve the stored status instead of always defaulting to "Pending"
+        app.status = status;
+        return app;
     }
 
     /**
@@ -70,14 +79,14 @@ public class Storage {
     public static void saveApplications(ArrayList<Application> userApplications) {
         try {
             FileWriter fw = new FileWriter(FILE_PATH);
-            String textToAdd = "";
+            StringBuilder sb = new StringBuilder();
 
             // Convert all applications to string format
             for (Application application : userApplications) {
-                textToAdd += applicationToFileFormat(application) + System.lineSeparator();
+                sb.append(applicationToFileFormat(application)).append(System.lineSeparator());
             }
 
-            fw.write(textToAdd);
+            fw.write(sb.toString());
             fw.close();
 
         } catch (IOException e) {
@@ -92,7 +101,9 @@ public class Storage {
      * @return The formatted string.
      */
     private static String applicationToFileFormat(Application application) {
-        return application.company + "|" + application.role + "|"  + application.deadline + "|" + application.contact + "|" + application.status;
+        return application.company + "|" + application.role + "|"
+                + application.deadline + "|" + application.contact
+                + "|" + application.status;
     }
 
 }

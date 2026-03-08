@@ -30,8 +30,12 @@ public class Ui {
     public static void printGoodbye() {
         System.out.print(GOODBYE_MESSAGE);
     }
-
-
+    public static void printWelcome() {
+        System.out.println(BORDER);
+        System.out.println(" Hello! I'm InternTrack");
+        System.out.println(" What can I do for you?");
+        System.out.println(BORDER);
+    }
     /**
      * Prints a confirmation message when a new application is added.
      *

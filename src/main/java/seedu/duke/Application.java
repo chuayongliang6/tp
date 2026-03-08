@@ -28,7 +28,12 @@ public class Application {
         this.contact = contact;
         this.status = "Pending";
     }
+
+    @Override
     public String toString() {
-        return company + " - " + role + " (Deadline: " + deadline + ", Contact: " + contact + ", Status: " + status + ")";
+        return company + " - " + role
+                + " (Deadline: " + deadline + ", Contact: " + contact
+                + ", Status: " + status + ")";
     }
+
 }
