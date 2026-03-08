@@ -1,4 +1,4 @@
-package seedu.duke;
+package seedu.interntrack;
 
 /**
  * Represents an exception specific to the InternTrack application.

@@ -29,11 +29,11 @@ test {
 }
 
 application {
-    mainClass.set("seedu.duke.InternTrack")
+    mainClass.set("seedu.interntrack.InternTrack")
 }
 
 shadowJar {
-    archiveBaseName.set("duke")
+    archiveBaseName.set("InternTrack")
     archiveClassifier.set("")
 }
 

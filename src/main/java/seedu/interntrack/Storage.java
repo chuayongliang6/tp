@@ -1,4 +1,4 @@
-package seedu.duke;
+package seedu.interntrack;
 
 import java.io.File;
 import java.io.FileWriter;
