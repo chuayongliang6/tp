@@ -74,6 +74,21 @@ public class Ui {
      *
      * @param userApplications The current list used to retrieve the total count.
      */
+    private static void printApplication(Application app, int index) {
+        String roles = app.getRole();
+        String company = app.getCompany();
+        String status = app.getStatus();
+        assert company != null && !company.isEmpty() :
+                "Existing application must have company";
+        assert roles != null && !roles.isEmpty() :
+                "Existing application must have role";
+        assert status != null :
+                "Existing application must have status";
+        String deadline = (app.getDeadline() != null) ? " Apply by " + app.getDeadline().toString() + "." : "";
+        String contact = (app.getContact() != null) ? " Contact with " + app.getContact() + "." : "";
+        System.out.println((index + 1) + ". " + roles + " at " + company + " is " + status + "." + deadline + contact);
+    }
+
     public static void printAllApplications(ArrayList<Application> userApplications) {
         if (userApplications.isEmpty()) {
             System.out.println("You have not applied for any roles yet, start applying now!");
@@ -83,18 +98,7 @@ public class Ui {
         System.out.println("You have applied for " + applicationCount + ((applicationCount > 1) ? " roles" : " role"));
         for (int i = 0; i < applicationCount; i++) {
             Application app = userApplications.get(i);
-            String roles = app.getRole();
-            String company = app.getCompany();
-            String status = app.getStatus();
-            assert app.getCompany() != null && !app.getCompany().isEmpty() :
-                    "Existing application must have company";
-            assert app.getRole() != null && !app.getRole().isEmpty() :
-                    "Existing application must have role";
-            assert app.getStatus() != null:
-                    "Existing application must have status";
-            String deadline = (app.getDeadline() != null) ? " Apply by " + app.getDeadline().toString() + "." : "";
-            String contact = (app.getContact() != null) ? " Contact with " + app.getContact() + "." : "";
-            System.out.println((i + 1) + ". " + roles + " at " + company + " is " + status + "." + deadline + contact);
+            printApplication(app, i);
         }
     }
 
@@ -115,19 +119,7 @@ public class Ui {
                 + " with status " + status + ".");
         for (int i = 0; i < applicationCount; i++) {
             Application app = filteredApplications.get(i);
-            String roles = app.getRole();
-            String company = app.getCompany();
-            String applicationStatus = app.getStatus();
-            assert app.getCompany() != null && !app.getCompany().isEmpty() :
-                    "Existing application must have company";
-            assert app.getRole() != null && !app.getRole().isEmpty() :
-                    "Existing application must have role";
-            assert applicationStatus != null :
-                    "Existing application must have status";
-            String deadline = (app.getDeadline() != null) ? " Apply by " + app.getDeadline().toString() + "." : "";
-            String contact = (app.getContact() != null) ? " Contact with " + app.getContact() + "." : "";
-            System.out.println((i + 1) + ". " + roles + " at " + company + " is "
-                    + applicationStatus + "." + deadline + contact);
+            printApplication(app, i);
         }
     }
 
