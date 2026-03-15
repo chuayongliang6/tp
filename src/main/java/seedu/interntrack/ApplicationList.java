@@ -48,4 +48,26 @@ public class ApplicationList {
         application.setStatus(status);
         return application;
     }
+
+    /**
+     * Filters applications by status.
+     *
+     * @param userApplications The list to filter.
+     * @param status The status to match.
+     * @return A list of applications that match the status.
+     */
+    public static ArrayList<Application> filterApplicationsByStatus(ArrayList<Application> userApplications,
+                                                                    String status) {
+        ArrayList<Application> filteredApplications = new ArrayList<>();
+        for (Application application : userApplications) {
+            String applicationStatus = application.getStatus();
+            assert applicationStatus != null : "Existing application must have status";
+            if (applicationStatus.equalsIgnoreCase(status)) {
+                filteredApplications.add(application);
+            }
+        }
+        logger.log(Level.INFO, "Filtered applications by status=" + status
+                + ". Matches: " + filteredApplications.size());
+        return filteredApplications;
+    }
 }

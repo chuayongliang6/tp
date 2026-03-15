@@ -13,6 +13,7 @@ public class Parser {
     private static final String DATE_FORMAT_ERROR = "Date must be in YYYY-MM-DD format.";
     private static final String STATUS_PREFIX = "s/";
     private static final String EDIT_FORMAT_ERROR = "Use format: edit INDEX s/NEW_STATUS";
+    private static final String FILTER_FORMAT_ERROR = "Use format: filter s/STATUS";
     private static final Logger logger = Logger.getLogger("Parser");
     /**
      * Creates an Application from a raw user input string.
@@ -108,6 +109,29 @@ public class Parser {
         }
 
         String status = parts[2].substring(STATUS_PREFIX.length()).trim();
+
+        if (status.isEmpty()) {
+            throw new InternTrackException("Status cannot be empty.");
+        }
+
+        return status;
+    }
+
+    /**
+     * Parses the status from a filter command.
+     *
+     * @param input The raw user input string.
+     * @return The parsed status string.
+     * @throws InternTrackException If the status is missing.
+     */
+    public static String parseFilterStatus(String input) throws InternTrackException {
+        String[] parts = input.trim().split("\\s+", 2);
+
+        if (parts.length < 2 || !parts[1].startsWith(STATUS_PREFIX)) {
+            throw new InternTrackException(FILTER_FORMAT_ERROR);
+        }
+
+        String status = parts[1].substring(STATUS_PREFIX.length()).trim();
 
         if (status.isEmpty()) {
             throw new InternTrackException("Status cannot be empty.");

@@ -12,3 +12,5 @@ edit 2xc s/Accepted
 edit 123213
 edit 5 s/Rejected
 list
+filter s/Pending
+filter s/Ghosted

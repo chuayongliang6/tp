@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class Ui {
     private static final String BORDER = "____________________________________________________________";
     private static final String GOODBYE_MESSAGE = BORDER
-            + " Bye. Hope to see you again soon!\n"
+            + "\nBye. Hope to see you again soon!\n"
             + BORDER;
     private static final String UNKNOWN_COMMAND_MESSAGE = "Unknown command. Please try again.";
 
@@ -22,6 +22,15 @@ public class Ui {
      */
     public static String readCommand() {
         return scanner.nextLine(); // Used here to return the string
+    }
+
+    /**
+     * Check if there is more user input to read.
+     *
+     * @return true if there is more input, false otherwise.
+     */
+    public static boolean hasMoreCommands() {
+        return scanner.hasNextLine();
     }
 
     /**
@@ -65,6 +74,21 @@ public class Ui {
      *
      * @param userApplications The current list used to retrieve the total count.
      */
+    private static void printApplication(Application app, int index) {
+        String roles = app.getRole();
+        String company = app.getCompany();
+        String status = app.getStatus();
+        assert company != null && !company.isEmpty() :
+                "Existing application must have company";
+        assert roles != null && !roles.isEmpty() :
+                "Existing application must have role";
+        assert status != null :
+                "Existing application must have status";
+        String deadline = (app.getDeadline() != null) ? " Apply by " + app.getDeadline().toString() + "." : "";
+        String contact = (app.getContact() != null) ? " Contact with " + app.getContact() + "." : "";
+        System.out.println((index + 1) + ". " + roles + " at " + company + " is " + status + "." + deadline + contact);
+    }
+
     public static void printAllApplications(ArrayList<Application> userApplications) {
         if (userApplications.isEmpty()) {
             System.out.println("You have not applied for any roles yet, start applying now!");
@@ -74,18 +98,28 @@ public class Ui {
         System.out.println("You have applied for " + applicationCount + ((applicationCount > 1) ? " roles" : " role"));
         for (int i = 0; i < applicationCount; i++) {
             Application app = userApplications.get(i);
-            String roles = app.getRole();
-            String company = app.getCompany();
-            String status = app.getStatus();
-            assert app.getCompany() != null && !app.getCompany().isEmpty() :
-                    "Existing application must have company";
-            assert app.getRole() != null && !app.getRole().isEmpty() :
-                    "Existing application must have role";
-            assert app.getStatus() != null:
-                    "Existing application must have status";
-            String deadline = (app.getDeadline() != null) ? " Apply by " + app.getDeadline().toString() + "." : "";
-            String contact = (app.getContact() != null) ? " Contact with " + app.getContact() + "." : "";
-            System.out.println((i + 1) + ". " + roles + " at " + company + " is " + status + "." + deadline + contact);
+            printApplication(app, i);
+        }
+    }
+
+    /**
+     * Prints applications filtered by the given status.
+     *
+     * @param filteredApplications The filtered list to display.
+     * @param status The status used for filtering.
+     */
+    public static void printFilteredApplications(ArrayList<Application> filteredApplications, String status) {
+        if (filteredApplications.isEmpty()) {
+            System.out.println("No applications found with status: " + status + ".");
+            return;
+        }
+        int applicationCount = filteredApplications.size();
+        System.out.println("You have " + applicationCount
+                + ((applicationCount > 1) ? " applications" : " application")
+                + " with status " + status + ".");
+        for (int i = 0; i < applicationCount; i++) {
+            Application app = filteredApplications.get(i);
+            printApplication(app, i);
         }
     }
 

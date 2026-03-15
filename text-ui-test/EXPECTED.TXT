@@ -58,3 +58,13 @@ You have applied for 3 roles
 2. TA at NUS is Applied. Contact with Prof X.
 3. Embedded at Micron is Pending. Apply by 2027-01-01.
 ____________________________________________________________
+____________________________________________________________
+You have 1 application with status Pending.
+1. Embedded at Micron is Pending. Apply by 2027-01-01.
+____________________________________________________________
+____________________________________________________________
+No applications found with status: Ghosted.
+____________________________________________________________
+____________________________________________________________
+Bye. Hope to see you again soon!
+____________________________________________________________

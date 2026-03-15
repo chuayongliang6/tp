@@ -11,6 +11,7 @@ public class InternTrack {
     private static final String ADD_COMMAND = "add";
     private static final String BYE_COMMAND = "bye";
     private static final String EDIT_COMMAND = "edit";
+    private static final String FILTER_COMMAND = "filter";
     private static final String LIST_COMMAND = "list";
     private static final Logger logger = Logger.getLogger("InternTrack");
 
@@ -24,12 +25,14 @@ public class InternTrack {
         assert userApplications != null : "userApplications list should not be null during command handling";
         Storage.loadApplications(userApplications);
         Ui.printWelcome();
-        String line = Ui.readCommand();
-        while (!line.equals(BYE_COMMAND)) {
+        while (Ui.hasMoreCommands()) {
+            String line = Ui.readCommand();
+            if (line == null || line.trim().equals(BYE_COMMAND)) {
+                break;
+            }
             Ui.printBorder();
             handleCommand(line, userApplications);
             Ui.printBorder();
-            line = Ui.readCommand();
         }
         Ui.printGoodbye();
     }
@@ -55,6 +58,8 @@ public class InternTrack {
                 Storage.saveApplications(userApplications);
             } else if (line.startsWith(EDIT_COMMAND)) {
                 handleEditCommand(line, userApplications);
+            } else if (line.startsWith(FILTER_COMMAND)) {
+                handleFilterCommand(line, userApplications);
             } else if (line.startsWith(LIST_COMMAND)) {
                 handleListCommand(line, userApplications);
             } else {
@@ -93,5 +98,20 @@ public class InternTrack {
         Application updatedApplication = ApplicationList.editApplicationStatus(userApplications, index, status);
         Ui.printEditApplication(updatedApplication, index);
         Storage.saveApplications(userApplications);
+    }
+
+    /**
+     * Handles the filter command by listing applications that match the status.
+     *
+     * @param line             The raw command string entered by the user.
+     * @param userApplications The current list of applications.
+     * @throws InternTrackException If the command format is invalid.
+     */
+    private static void handleFilterCommand(String line, ArrayList<Application> userApplications)
+            throws InternTrackException {
+        String status = Parser.parseFilterStatus(line);
+        ArrayList<Application> filteredApplications =
+                ApplicationList.filterApplicationsByStatus(userApplications, status);
+        Ui.printFilteredApplications(filteredApplications, status);
     }
 }
