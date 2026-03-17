@@ -23,7 +23,6 @@ public class InternTrack {
      */
     public static void main(String[] args) {
         ArrayList<Application> userApplications = new ArrayList<>();
-        assert userApplications != null : "userApplications list should not be null during command handling";
         Storage.loadApplications(userApplications);
         Ui.printWelcome();
         while (Ui.hasMoreCommands()) {
@@ -113,13 +112,30 @@ public class InternTrack {
     /**
      * Handles the edit command by updating an application's status.
      */
+    /**
+     * Handles the edit command by updating an application's status.
+     */
     private static void handleEditCommand(String line, ArrayList<Application> userApplications)
             throws InternTrackException {
+        logger.info("Processing edit command: " + line);
+
         int index = Parser.parseEditIndex(line);
         String status = Parser.parseEditStatus(line);
-        Application updatedApplication = ApplicationList.editApplicationStatus(userApplications, index, status);
+
+        assert !status.isBlank() : "Parsed status should not be blank";
+
+        logger.info("Editing application at index " + index + " with new status: " + status);
+
+        Application updatedApplication =
+                ApplicationList.editApplicationStatus(userApplications, index, status);
+
+        assert updatedApplication.getStatus().equals(status)
+                : "Application status should match edited status";
+
         Ui.printEditApplication(updatedApplication, index);
         Storage.saveApplications(userApplications);
+
+        logger.info("Successfully updated application at index " + index);
     }
 
     /**
