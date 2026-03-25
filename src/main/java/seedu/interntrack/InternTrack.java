@@ -46,18 +46,7 @@ public class InternTrack {
     private static void handleCommand(String line, ArrayList<Application> userApplications) {
         try {
             if (line.startsWith(ADD_COMMAND)) {
-                logger.log(Level.INFO, "Processing ADD command");
-
-                int sizeBefore = userApplications.size();
-                Application newApplication = ApplicationList.addApplications(userApplications, line);
-
-                assert userApplications.size() == sizeBefore + 1 :
-                        "List size should increment after a successful add";
-
-                logger.log(Level.INFO, "Successfully added application: "
-                        + newApplication.getCompany() + " - " + newApplication.getRole());
-                Ui.printAddApplication(newApplication, userApplications);
-                Storage.saveApplications(userApplications);
+                handleAddCommand(line, userApplications);
             } else if (line.startsWith(EDIT_COMMAND)) {
                 handleEditCommand(line, userApplications);
             } else if (line.startsWith(DELETE_COMMAND)) {
@@ -74,6 +63,25 @@ public class InternTrack {
             logger.log(Level.WARNING, "InternTrackException during command processing: " + e.getMessage());
             System.out.println(e.getMessage());
         }
+    }
+
+    /**
+     * Handles the add command by adding a new application to current application lists.
+     */
+    private static void handleAddCommand(String line, ArrayList<Application> userApplications)
+            throws InternTrackException {
+        logger.log(Level.INFO, "Processing ADD command");
+
+        int sizeBefore = userApplications.size();
+        Application newApplication = ApplicationList.addApplications(userApplications, line);
+
+        assert userApplications.size() == sizeBefore + 1 :
+                "List size should increment after a successful add";
+
+        logger.log(Level.INFO, "Successfully added application: "
+                + newApplication.getCompany() + " - " + newApplication.getRole());
+        Ui.printAddApplication(newApplication, userApplications);
+        Storage.saveApplications(userApplications);
     }
 
     /**
