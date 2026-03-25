@@ -18,3 +18,13 @@ filter s/Pending
 filter s/Ghosted
 delete 1
 add c/ShopBack r/SE d/2025-11-11 ct/Harim
+add r/HE c/NVIDIA d/2026-03-27 ct/Prof X
+add r/Sales c/Shopee d/2030-10-23 ct/Prof Y
+add r/Marketing c/Micron ct/Limux
+list
+sort by/NAME
+sort by/DEADLINE ASCS
+sort by/ROLE DESC DESC DESC
+sort by/DEADLINE NONNULL DESC
+sort by/CONTACT NONNULL
+sort by/STATUS

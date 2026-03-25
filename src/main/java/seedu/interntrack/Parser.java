@@ -201,21 +201,21 @@ public class Parser {
         if (!parts[1].startsWith(SORT_PREFIX)) {
             throw new InternTrackException("Wrong format for sort command: sort by/CRITERIA [DIRECTION]");
         }
-        String[] criteria = parts[1].substring(SORT_PREFIX.length()).trim().split("\\s+", 2);
-        if (!criteria[0].equals(SORT_CRITERIA1) && !criteria[0].equals(SORT_CRITERIA2)
-                && !criteria[0].equals(SORT_CRITERIA3) && !criteria[0].equals(SORT_CRITERIA4)
-                && !criteria[0].equals(SORT_CRITERIA5)) {
+        String[] criterias = parts[1].substring(SORT_PREFIX.length()).trim().split("\\s+", 2);
+        if (!criterias[0].equals(SORT_CRITERIA1) && !criterias[0].equals(SORT_CRITERIA2)
+                && !criterias[0].equals(SORT_CRITERIA3) && !criterias[0].equals(SORT_CRITERIA4)
+                && !criterias[0].equals(SORT_CRITERIA5)) {
             throw new InternTrackException("Wrong sort criteria, use either these: ROLE, COMPANY, DEADLINE, CONTACT");
         }
-        if(criteria.length == 1){ //No other flags
-            return criteria;
+        if(criterias.length == 1){ //No other flags
+            return criterias;
         }
         //Extra flag
         boolean isDesc = false;
         boolean isNonnull = false;
-        for(String additional_criteria : criteria[1].split("\\s+")){
+        for(String additional_criteria : criterias[1].split("\\s+")){
             if (!additional_criteria.equals(SORT_FLAG1) && !additional_criteria.equals(SORT_FLAG2)) {
-                throw new InternTrackException("Wrong sorting direction, use either these: ASC, DESC");
+                throw new InternTrackException("Wrong flag, use either these: DESC, NONNULL");
             }
             if(additional_criteria.equals(SORT_FLAG1)){
                 isDesc = true;
@@ -225,7 +225,7 @@ public class Parser {
             }
         }
         ArrayList<String> newCriteriaList = new ArrayList<>();
-        newCriteriaList.add(criteria[0]);
+        newCriteriaList.add(criterias[0]);
         if (isDesc) {
             newCriteriaList.add(SORT_FLAG1);
         }

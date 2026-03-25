@@ -83,6 +83,20 @@ Examples:
 * `filter s/Pending`
   * There are 2 applications in the tracker that has Pending status.
 
+### 6. Sort the tracker: `sort`
+
+Sort all application with some criteria. Default is ascending lexigraphically.
+
+Format: `filter by/CRITERIA [DESC] [NONNULL] `
+
+* by/CRITERIA: The criteria you want to sort, supported ROLE, COMPANY, DEADLINE, CONTACT, STATUS.
+* DESC: Optional flag to set it as descending lexigraphically
+* NONNULL: Optional flag to remove null entry for the criteria that we are interested in
+
+Examples:
+* `filter s/Pending`
+  * There are 2 applications in the tracker that has Pending status.
+
 ## FAQ
 
 
