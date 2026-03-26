@@ -6,6 +6,8 @@ add c/NUS r/TA ct/ d/
 add r/Embedded c/Micron d/2027-01-01
 add c/NUS r/TA d/
 list
+delete 4
+delete -1
 edit 2 s/Applied
 edit 1 s/Accepted
 edit 2xc s/Accepted
@@ -14,3 +16,15 @@ edit 5 s/Rejected
 list
 filter s/Pending
 filter s/Ghosted
+delete 1
+add c/ShopBack r/SE d/2025-11-11 ct/Harim
+add r/HE c/NVIDIA d/2026-03-27 ct/Prof X
+add r/Sales c/Shopee d/2030-10-23 ct/Prof Y
+add r/Marketing c/Micron ct/Limux
+list
+sort by/NAME
+sort by/DEADLINE ASCS
+sort by/ROLE DESC DESC DESC
+sort by/DEADLINE NONNULL DESC
+sort by/CONTACT NONNULL
+sort by/STATUS

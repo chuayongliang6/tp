@@ -1,5 +1,6 @@
 package seedu.interntrack;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -19,12 +20,12 @@ public class ApplicationList {
      * @throws InternTrackException If the input is missing required fields or has an invalid date.
      */
     public static Application addApplications(ArrayList<Application> userApplications,
-            String line) throws InternTrackException {
+                                              String line) throws InternTrackException {
         Application newApplication = Parser.createApplication(line);
         assert newApplication.getCompany() != null && !newApplication.getCompany().isEmpty() :
-            "Application company should be valid after creation";
+                "Application company should be valid after creation";
         assert newApplication.getRole() != null && !newApplication.getRole().isEmpty() :
-            "Application role should be valid after creation";
+                "Application role should be valid after creation";
         userApplications.add(newApplication);
         logger.log(Level.INFO, "Added new application to list. Total applications: " + userApplications.size());
         return newApplication;
@@ -34,8 +35,8 @@ public class ApplicationList {
      * Edits the status of an existing application.
      *
      * @param userApplications The list containing the application.
-     * @param index The 1-based index of the application to edit.
-     * @param status The new status value.
+     * @param index            The 1-based index of the application to edit.
+     * @param status           The new status value.
      * @return The updated Application object.
      * @throws InternTrackException If the index is invalid.
      */
@@ -68,7 +69,7 @@ public class ApplicationList {
      * Filters applications by status.
      *
      * @param userApplications The list to filter.
-     * @param status The status to match.
+     * @param status           The status to match.
      * @return A list of applications that match the status.
      */
     public static ArrayList<Application> filterApplicationsByStatus(ArrayList<Application> userApplications,
@@ -84,5 +85,110 @@ public class ApplicationList {
         logger.log(Level.INFO, "Filtered applications by status=" + status
                 + ". Matches: " + filteredApplications.size());
         return filteredApplications;
+    }
+
+    /**
+     * Sort applications by criteria.
+     *
+     * @param userApplications The list to filter.
+     * @param criteria         status to match.
+     * @return A list of applications that has been sorted.
+     *
+     */
+    public static ArrayList<Application> sortApplicationsByCriteria(ArrayList<Application> userApplications,
+                                                                    String[] criteria) throws InternTrackException {
+        assert criteria.length > 0 : "There must be some sorting criteria";
+        assert criteria.length < 4 : "There are at most 3 criteria";
+        boolean isDesc = false;
+        boolean isNonnull = false;
+        for (int i = 1; i < criteria.length; i++) {
+            assert criteria[i].equals("DESC") || criteria[i].equals("NONNULL") : "Unknown flag: " + criteria[i];
+            if (criteria[i].equals("DESC")) {
+                isDesc = true;
+            } else {
+                isNonnull = true;
+            }
+        }
+        final boolean finalIsDesc = isDesc;
+        final boolean finalIsNonnull = isNonnull;
+
+        ArrayList<Application> sortedApplicationList = new ArrayList<>(userApplications);
+        if (criteria[0].equals("ROLE")) {
+            sortedApplicationList.sort((a, b) -> {
+                int condition = a.getRole().compareToIgnoreCase(b.getRole());
+                return (finalIsDesc) ? -condition : condition;
+            });
+            return sortedApplicationList;
+        } else if (criteria[0].equals("STATUS")) {
+            sortedApplicationList.sort((a, b) -> {
+                int condition = a.getStatus().compareToIgnoreCase(b.getStatus());
+                return (finalIsDesc) ? -condition : condition;
+            });
+            return sortedApplicationList;
+        } else if (criteria[0].equals("COMPANY")) {
+            sortedApplicationList.sort((a, b) -> {
+                int condition = a.getCompany().compareToIgnoreCase(b.getCompany());
+                return (finalIsDesc) ? -condition : condition;
+            });
+            return sortedApplicationList;
+        } else if (criteria[0].equals("CONTACT")) {
+            sortedApplicationList.sort((a, b) -> {
+                String contactA = a.getContact();
+                String contactB = b.getContact();
+                if (contactA == null && contactB == null) {
+                    return 0;
+                } else if (contactA == null) { // a null so a should at the back
+                    return 1;
+                } else if (contactB == null) {// b null so b should at the back
+                    return -1;
+                }
+                int condition = contactA.compareToIgnoreCase(contactB);
+                return (finalIsDesc) ? -condition : condition;
+            });
+            if (!finalIsNonnull) {
+                return sortedApplicationList;
+            }
+            ArrayList<Application> filteredApplicationList = new ArrayList<>();
+            for (Application app : sortedApplicationList) {
+                if (app.getContact() != null) {
+                    filteredApplicationList.add(app);
+                }
+            }
+            return filteredApplicationList;
+        } else if (criteria[0].equals("DEADLINE")) {
+            sortedApplicationList.sort((a, b) -> {
+                LocalDate deadlineA = a.getDeadline();
+                LocalDate deadlineB = b.getDeadline();
+                if (deadlineA == null && deadlineB == null) {
+                    return 0;
+                } else if (deadlineA == null) { // a null so a should at the back
+                    return 1;
+                } else if (deadlineB == null) {// b null so b should at the back
+                    return -1;
+                }
+                int condition;
+                if (deadlineA.isEqual(deadlineB)) {
+                    return 0;
+                }
+                if (deadlineA.isBefore(deadlineB)) {
+                    condition = -1;
+                } else {
+                    condition = 1;
+                }
+                return (finalIsDesc) ? -condition : condition;
+            });
+            if (!finalIsNonnull) {
+                return sortedApplicationList;
+            }
+            ArrayList<Application> filteredApplicationList = new ArrayList<>();
+            for (Application app : sortedApplicationList) {
+                if (app.getDeadline() != null) {
+                    filteredApplicationList.add(app);
+                }
+            }
+            return filteredApplicationList;
+        }
+        throw new InternTrackException("Wrong sorting criteria, please try again");
+
     }
 }

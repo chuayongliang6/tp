@@ -36,6 +36,12 @@ You have applied for 3 roles
 3. Embedded at Micron is Pending. Apply by 2027-01-01.
 ____________________________________________________________
 ____________________________________________________________
+Invalid application index.
+____________________________________________________________
+____________________________________________________________
+Application index must be greater than 0.
+____________________________________________________________
+____________________________________________________________
 Nice! I've updated application 2:
   NUS - TA (Contact: Prof X, Status: Applied)
 ____________________________________________________________
@@ -64,6 +70,78 @@ You have 1 application with status Pending.
 ____________________________________________________________
 ____________________________________________________________
 No applications found with status: Ghosted.
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this application:
+  1. Shopee - Backend Intern (Deadline: 2023-11-30, Contact: Johns, Status: Accepted)
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this application:
+  ShopBack - SE (Deadline: 2025-11-11, Contact: Harim, Status: Pending)
+Now you have 3 applications in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this application:
+  NVIDIA - HE (Deadline: 2026-03-27, Contact: Prof X, Status: Pending)
+Now you have 4 applications in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this application:
+  Shopee - Sales (Deadline: 2030-10-23, Contact: Prof Y, Status: Pending)
+Now you have 5 applications in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this application:
+  Micron - Marketing (Contact: Limux, Status: Pending)
+Now you have 6 applications in the list.
+____________________________________________________________
+____________________________________________________________
+You have applied for 6 roles
+1. TA at NUS is Applied. Contact with Prof X.
+2. Embedded at Micron is Pending. Apply by 2027-01-01.
+3. SE at ShopBack is Pending. Apply by 2025-11-11. Contact with Harim.
+4. HE at NVIDIA is Pending. Apply by 2026-03-27. Contact with Prof X.
+5. Sales at Shopee is Pending. Apply by 2030-10-23. Contact with Prof Y.
+6. Marketing at Micron is Pending. Contact with Limux.
+____________________________________________________________
+____________________________________________________________
+Wrong sort criteria, use either these: ROLE, COMPANY, DEADLINE, CONTACT
+____________________________________________________________
+____________________________________________________________
+Wrong flag, use either these: DESC, NONNULL
+____________________________________________________________
+____________________________________________________________
+The application list has been sorted by role in descending order.
+1. TA at NUS is Applied. Contact with Prof X.
+2. SE at ShopBack is Pending. Apply by 2025-11-11. Contact with Harim.
+3. Sales at Shopee is Pending. Apply by 2030-10-23. Contact with Prof Y.
+4. Marketing at Micron is Pending. Contact with Limux.
+5. HE at NVIDIA is Pending. Apply by 2026-03-27. Contact with Prof X.
+6. Embedded at Micron is Pending. Apply by 2027-01-01.
+____________________________________________________________
+____________________________________________________________
+The application list has been sorted by deadline in descending order with null entries removed.
+1. Sales at Shopee is Pending. Apply by 2030-10-23. Contact with Prof Y.
+2. Embedded at Micron is Pending. Apply by 2027-01-01.
+3. HE at NVIDIA is Pending. Apply by 2026-03-27. Contact with Prof X.
+4. SE at ShopBack is Pending. Apply by 2025-11-11. Contact with Harim.
+____________________________________________________________
+____________________________________________________________
+The application list has been sorted by contact in ascending order with null entries removed.
+1. SE at ShopBack is Pending. Apply by 2025-11-11. Contact with Harim.
+2. Marketing at Micron is Pending. Contact with Limux.
+3. TA at NUS is Applied. Contact with Prof X.
+4. HE at NVIDIA is Pending. Apply by 2026-03-27. Contact with Prof X.
+5. Sales at Shopee is Pending. Apply by 2030-10-23. Contact with Prof Y.
+____________________________________________________________
+____________________________________________________________
+The application list has been sorted by status in ascending order.
+1. TA at NUS is Applied. Contact with Prof X.
+2. Embedded at Micron is Pending. Apply by 2027-01-01.
+3. SE at ShopBack is Pending. Apply by 2025-11-11. Contact with Harim.
+4. HE at NVIDIA is Pending. Apply by 2026-03-27. Contact with Prof X.
+5. Sales at Shopee is Pending. Apply by 2030-10-23. Contact with Prof Y.
+6. Marketing at Micron is Pending. Contact with Limux.
 ____________________________________________________________
 ____________________________________________________________
 Bye. Hope to see you again soon!

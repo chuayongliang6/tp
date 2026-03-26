@@ -1,6 +1,7 @@
 package seedu.interntrack;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -12,9 +13,18 @@ public class Parser {
     public static final String REGEX = "(?=c/|r/|ct/|d/)";
     private static final String DATE_FORMAT_ERROR = "Date must be in YYYY-MM-DD format.";
     private static final String STATUS_PREFIX = "s/";
+    private static final String SORT_PREFIX = "by/";
+    private static final String SORT_CRITERIA1 = "ROLE";
+    private static final String SORT_CRITERIA2 = "COMPANY";
+    private static final String SORT_CRITERIA3 = "DEADLINE";
+    private static final String SORT_CRITERIA4 = "CONTACT";
+    private static final String SORT_CRITERIA5 = "STATUS";
+    private static final String SORT_FLAG1 = "DESC";
+    private static final String SORT_FLAG2 = "NONNULL";
     private static final String EDIT_FORMAT_ERROR = "Use format: edit INDEX s/NEW_STATUS";
     private static final String FILTER_FORMAT_ERROR = "Use format: filter s/STATUS";
     private static final Logger logger = Logger.getLogger("Parser");
+
     /**
      * Creates an Application from a raw user input string.
      *
@@ -150,6 +160,7 @@ public class Parser {
 
         return status;
     }
+
     /**
      * Parses the application index from a delete command.
      *
@@ -173,6 +184,56 @@ public class Parser {
         } catch (NumberFormatException e) {
             throw new InternTrackException("Application index must be a valid number.");
         }
+    }
+    /**
+     * Parses the sorting criteria from a sort command.
+     *
+     * @param input The raw user input string.
+     * @return String array with from 1 to 2 elements, they are sorting criteria and direction.
+     * @throws InternTrackException If the index is missing or invalid.
+     *
+     */
+    public static String[] parseSortCriteria(String input) throws InternTrackException {
+        String[] parts = input.trim().split("\\s+", 2);
+        if (parts.length < 2) {
+            throw new InternTrackException("Wrong format for sort command: sort by/CRITERIA [DIRECTION]");
+        }
+        if (!parts[1].startsWith(SORT_PREFIX)) {
+            throw new InternTrackException("Wrong format for sort command: sort by/CRITERIA [DIRECTION]");
+        }
+        String[] criterias = parts[1].substring(SORT_PREFIX.length()).trim().split("\\s+", 2);
+        if (!criterias[0].equals(SORT_CRITERIA1) && !criterias[0].equals(SORT_CRITERIA2)
+                && !criterias[0].equals(SORT_CRITERIA3) && !criterias[0].equals(SORT_CRITERIA4)
+                && !criterias[0].equals(SORT_CRITERIA5)) {
+            throw new InternTrackException("Wrong sort criteria, use either these: ROLE, COMPANY, DEADLINE, CONTACT");
+        }
+        if(criterias.length == 1){ //No other flags
+            return criterias;
+        }
+        //Extra flag
+        boolean isDesc = false;
+        boolean isNonnull = false;
+        for(String criteria : criterias[1].split("\\s+")){
+            if (!criteria.equals(SORT_FLAG1) && !criteria.equals(SORT_FLAG2)) {
+                throw new InternTrackException("Wrong flag, use either these: DESC, NONNULL");
+            }
+            if(criteria.equals(SORT_FLAG1)){
+                isDesc = true;
+            }
+            if(criteria.equals(SORT_FLAG2)){
+                isNonnull = true;
+            }
+        }
+        ArrayList<String> newCriteriaList = new ArrayList<>();
+        newCriteriaList.add(criterias[0]);
+        if (isDesc) {
+            newCriteriaList.add(SORT_FLAG1);
+        }
+        if (isNonnull) {
+            newCriteriaList.add(SORT_FLAG2);
+        }
+
+        return newCriteriaList.toArray(new String[0]);
     }
 }
 

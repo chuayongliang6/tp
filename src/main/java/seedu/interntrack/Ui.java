@@ -90,11 +90,13 @@ public class Ui {
     }
 
     public static void printAllApplications(ArrayList<Application> userApplications) {
+        assert userApplications != null : "Application list should not be null";
         if (userApplications.isEmpty()) {
             System.out.println("You have not applied for any roles yet, start applying now!");
             return;
         }
         int applicationCount = userApplications.size();
+        assert applicationCount > 0 : "Application count should be positive when not empty";
         System.out.println("You have applied for " + applicationCount + ((applicationCount > 1) ? " roles" : " role"));
         for (int i = 0; i < applicationCount; i++) {
             Application app = userApplications.get(i);
@@ -106,7 +108,7 @@ public class Ui {
      * Prints applications filtered by the given status.
      *
      * @param filteredApplications The filtered list to display.
-     * @param status The status used for filtering.
+     * @param status               The status used for filtering.
      */
     public static void printFilteredApplications(ArrayList<Application> filteredApplications, String status) {
         if (filteredApplications.isEmpty()) {
@@ -119,6 +121,43 @@ public class Ui {
                 + " with status " + status + ".");
         for (int i = 0; i < applicationCount; i++) {
             Application app = filteredApplications.get(i);
+            printApplication(app, i);
+        }
+    }
+
+    /**
+     * Prints applications filtered by the given status.
+     *
+     * @param sortedApplications The sorted list to display.
+     * @param criterias          The criteria used for sorting.
+     */
+    public static void printSortedApplications(ArrayList<Application> sortedApplications, String[] criterias) {
+        if (sortedApplications.isEmpty()) {
+            System.out.println("No applications found after sorting");
+            return;
+        }
+        int applicationCount = sortedApplications.size();
+        assert criterias.length > 0 : "There must be some sorting criteria";
+        assert criterias.length < 4 : "There are at most 3 criteria";
+        boolean isDesc = false;
+        boolean isNonnull = false;
+        for (int i = 1; i < criterias.length; i++) {
+            assert criterias[i].equals("DESC") || criterias[i].equals("NONNULL") : "Unknown flag: " + criterias[i];
+            if (criterias[i].equals("DESC")) {
+                isDesc = true;
+            } else {
+                isNonnull = true;
+            }
+        }
+        String criteria = (criterias[0].equals("ROLE")) ? "role" :
+                (criterias[0].equals("COMPANY")) ? "company" :
+                        (criterias[0].equals("DEADLINE")) ? "deadline" :
+                                (criterias[0].equals("STATUS")) ? "status" : "contact";
+        System.out.println("The application list has been sorted by " + criteria
+                + " in " + (isDesc ? "descending order" : "ascending order")
+                + (isNonnull ? " with null entries removed." : "."));
+        for (int i = 0; i < applicationCount; i++) {
+            Application app = sortedApplications.get(i);
             printApplication(app, i);
         }
     }

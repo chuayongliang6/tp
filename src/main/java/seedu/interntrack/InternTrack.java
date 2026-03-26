@@ -14,6 +14,7 @@ public class InternTrack {
     private static final String FILTER_COMMAND = "filter";
     private static final String LIST_COMMAND = "list";
     private static final String DELETE_COMMAND = "delete";
+    private static final String SORT_COMMAND = "sort";
     private static final Logger logger = Logger.getLogger("InternTrack");
 
     /**
@@ -46,18 +47,7 @@ public class InternTrack {
     private static void handleCommand(String line, ArrayList<Application> userApplications) {
         try {
             if (line.startsWith(ADD_COMMAND)) {
-                logger.log(Level.INFO, "Processing ADD command");
-
-                int sizeBefore = userApplications.size();
-                Application newApplication = ApplicationList.addApplications(userApplications, line);
-
-                assert userApplications.size() == sizeBefore + 1 :
-                        "List size should increment after a successful add";
-
-                logger.log(Level.INFO, "Successfully added application: "
-                        + newApplication.getCompany() + " - " + newApplication.getRole());
-                Ui.printAddApplication(newApplication, userApplications);
-                Storage.saveApplications(userApplications);
+                handleAddCommand(line, userApplications);
             } else if (line.startsWith(EDIT_COMMAND)) {
                 handleEditCommand(line, userApplications);
             } else if (line.startsWith(DELETE_COMMAND)) {
@@ -65,7 +55,9 @@ public class InternTrack {
             } else if (line.startsWith(FILTER_COMMAND)) {
                 handleFilterCommand(line, userApplications);
             } else if (line.startsWith(LIST_COMMAND)) {
-                handleListCommand(line, userApplications);
+                handleListCommand( userApplications);
+            } else if (line.startsWith(SORT_COMMAND)) {
+                handleSortCommand(line, userApplications);
             } else {
                 logger.log(Level.WARNING, "Unknown command received: " + line);
                 Ui.printUnknownCommand();
@@ -74,6 +66,25 @@ public class InternTrack {
             logger.log(Level.WARNING, "InternTrackException during command processing: " + e.getMessage());
             System.out.println(e.getMessage());
         }
+    }
+
+    /**
+     * Handles the add command by adding a new application to current application lists.
+     */
+    private static void handleAddCommand(String line, ArrayList<Application> userApplications)
+            throws InternTrackException {
+        logger.log(Level.INFO, "Processing ADD command");
+
+        int sizeBefore = userApplications.size();
+        Application newApplication = ApplicationList.addApplications(userApplications, line);
+
+        assert userApplications.size() == sizeBefore + 1 :
+                "List size should increment after a successful add";
+
+        logger.log(Level.INFO, "Successfully added application: "
+                + newApplication.getCompany() + " - " + newApplication.getRole());
+        Ui.printAddApplication(newApplication, userApplications);
+        Storage.saveApplications(userApplications);
     }
 
     /**
@@ -104,9 +115,10 @@ public class InternTrack {
     /**
      * Handles the list command by listing all applications.
      */
-    private static void handleListCommand(String line, ArrayList<Application> userApplications)
+    private static void handleListCommand( ArrayList<Application> userApplications)
             throws InternTrackException {
         Ui.printAllApplications(userApplications);
+        logger.info("Showing all current applications");
     }
 
     /**
@@ -144,5 +156,18 @@ public class InternTrack {
         ArrayList<Application> filteredApplications =
                 ApplicationList.filterApplicationsByStatus(userApplications, status);
         Ui.printFilteredApplications(filteredApplications, status);
+    }
+
+    /**
+     * Handles the sort command by giving new application lists with some criteria.
+     */
+    private static void handleSortCommand(String line, ArrayList<Application> userApplications)
+            throws InternTrackException {
+        String[] criteria = Parser.parseSortCriteria(line);
+
+        assert criteria.length > 0: "There must be some sorting criteria";
+        assert criteria.length < 4: "There are at most 3 criteria";
+        ArrayList<Application> sortedApps = ApplicationList.sortApplicationsByCriteria(userApplications, criteria);
+        Ui.printSortedApplications(sortedApps, criteria);
     }
 }
