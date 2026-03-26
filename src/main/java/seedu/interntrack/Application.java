@@ -34,6 +34,19 @@ public class Application {
     }
 
     /**
+     * Initialises a copy of the specified application.
+     *
+     * @param other The application to copy.
+     */
+    public Application(Application other) {
+        this.company = other.company;
+        this.role = other.role;
+        this.deadline = other.deadline;
+        this.contact = other.contact;
+        this.status = other.status;
+    }
+
+    /**
      * Returns the company name of this application.
      *
      * @return The company name.

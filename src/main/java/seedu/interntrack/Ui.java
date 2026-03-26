@@ -185,6 +185,13 @@ public class Ui {
     }
 
     /**
+     * Prints confirmation after undoing the most recent modifying command.
+     */
+    public static void printUndoSuccess() {
+        System.out.println("Done. I've undone the most recent change.");
+    }
+
+    /**
      * Prints an error message when an unrecognised command is entered.
      */
     public static void printUnknownCommand() {
