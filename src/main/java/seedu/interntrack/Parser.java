@@ -191,16 +191,16 @@ public class Parser {
 
         PrefixedValue field = fields.get(0);
         return switch (field.prefix) {
-            case COMPANY_PREFIX -> FilterCriteria.forText(FilterCriteria.Field.COMPANY,
+        case COMPANY_PREFIX -> FilterCriteria.forText(FilterCriteria.Field.COMPANY,
                     parseRequiredTextValue(field.value, "Company name cannot be empty."));
-            case ROLE_PREFIX -> FilterCriteria.forText(FilterCriteria.Field.ROLE,
+        case ROLE_PREFIX -> FilterCriteria.forText(FilterCriteria.Field.ROLE,
                     parseRequiredTextValue(field.value, "Role name cannot be empty."));
-            case DEADLINE_PREFIX -> FilterCriteria.forDeadline(parseDateValue(field.value));
-            case CONTACT_PREFIX -> FilterCriteria.forText(FilterCriteria.Field.CONTACT,
+        case DEADLINE_PREFIX -> FilterCriteria.forDeadline(parseDateValue(field.value));
+        case CONTACT_PREFIX -> FilterCriteria.forText(FilterCriteria.Field.CONTACT,
                     parseRequiredTextValue(field.value, "Contact name cannot be empty."));
-            case STATUS_PREFIX -> FilterCriteria.forText(FilterCriteria.Field.STATUS,
+        case STATUS_PREFIX -> FilterCriteria.forText(FilterCriteria.Field.STATUS,
                     parseRequiredTextValue(field.value, "Status cannot be empty."));
-            default -> throw new InternTrackException(FILTER_FORMAT_ERROR);
+        default -> throw new InternTrackException(FILTER_FORMAT_ERROR);
         };
     }
 
@@ -252,7 +252,7 @@ public class Parser {
      *
      * @param input The raw user input string.
      * @return A String array where the first element is the sorting field,
-     * followed by optional flags such as DESC or NONNULL.
+     *     followed by optional flags such as DESC or NONNULL.
      * @throws InternTrackException If the format, criteria, or flags are invalid.
      */
     public static String[] parseSortCriteria(String input) throws InternTrackException {

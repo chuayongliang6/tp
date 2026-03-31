@@ -76,11 +76,11 @@ public class FilterCriteria {
 
     private String getFieldName() {
         return switch (field) {
-            case COMPANY -> "company";
-            case ROLE -> "role";
-            case CONTACT -> "contact";
-            case STATUS -> "status";
-            default -> "deadline";
+        case COMPANY -> "company";
+        case ROLE -> "role";
+        case CONTACT -> "contact";
+        case STATUS -> "status";
+        default -> "deadline";
         };
     }
 }

@@ -145,11 +145,11 @@ public class ApplicationList {
      */
     private static String getTextFieldValue(Application application, FilterCriteria.Field field) {
         return switch (field) {
-            case COMPANY -> application.getCompany();
-            case ROLE -> application.getRole();
-            case CONTACT -> application.getContact();
-            case STATUS -> application.getStatus();
-            default -> null;
+        case COMPANY -> application.getCompany();
+        case ROLE -> application.getRole();
+        case CONTACT -> application.getContact();
+        case STATUS -> application.getStatus();
+        default -> null;
         };
     }
 
