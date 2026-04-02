@@ -32,7 +32,6 @@
    - [Glossary](#glossary)
 7. [Appendix: Instructions for manual testing](#appendix-instructions-for-manual-testing)
    - [Launch and shutdown](#launch-and-shutdown)
-   - [Deleting an application](#deleting-an-application)
    - [Saving data](#saving-data)
 
 ---
