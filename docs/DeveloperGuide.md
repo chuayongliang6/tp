@@ -56,7 +56,19 @@ Java standard libraries such as `java.util`, `java.io`, and `java.time` were use
 
 ## Setting up, getting started
 
-{Provide step-by-step instructions for setting up the development environment and getting started with the project.}
+1. Ensure that you have **Java 17 or above** installed.
+2. Download the latest version of `InternTrack` from  
+   https://github.com/AY2526S2-CS2113-W10-1/tp/releases/tag/v1.0
+3. Open a terminal in the folder containing the jar file.
+4. Run the application using:
+
+```
+java -jar InternTrack.jar
+```
+
+5. Type commands into the terminal and press Enter to execute them.
+
+---
 
 ---
 
