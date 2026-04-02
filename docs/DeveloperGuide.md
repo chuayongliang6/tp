@@ -94,6 +94,11 @@ The ***Architecture Diagram*** given above explains the high-level design of the
 
 The `UI` component handles the interaction between the user and the application. It is responsible for reading user input from the console and displaying formatted output, including status messages, error alerts, and the visual representation of application data.
 
+
+#### Class Diagram
+
+![UI_diag.png](diagrams/UI_diag.png)
+
 #### Design Considerations
 
 ##### Aspect 1: Implementation of UI Methods (Static vs. Instance)
@@ -1017,6 +1022,12 @@ This method focuses on immediate priority. It ignores past deadlines to reduce c
 **Rationale for Current Choice:**
 
 Since the typical user tracks a manageable number of internship applications (usually < 200), the calculation is nearly instantaneous and better than maintaining a cached state.
+
+---
+
+##### Sequence Diagram: Summary Command
+
+![summary_command_diag.png](diagrams/summary_command_diag.png)
 
 ---
 

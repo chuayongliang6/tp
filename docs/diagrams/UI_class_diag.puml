@@ -1,0 +1,35 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam ClassSeparatorColor black
+skinparam ClassSeparatorThickness 1
+hide circle
+hide stereotype
+
+class Ui {
+  - BORDER : String {static, final}
+  - GOODBYE_MESSAGE : String {static, final}
+  - UNKNOWN_COMMAND_MESSAGE : String {static, final}
+  - scanner : Scanner {static, final}
+
+  + readCommand() : String {static}
+  + hasMoreCommands() : boolean {static}
+  + printBorder() : void {static}
+  + printGoodbye() : void {static}
+  + printWelcome() : void {static}
+  + printAddApplication(newApplication : Application, userApplications : ArrayList<Application>) : void {static}
+  - printApplication(app : Application, index : int) : void {static}
+  + printAllApplications(userApplications : ArrayList<Application>) : void {static}
+  + printFilteredApplications(filteredApplications : ArrayList<Application>, criteria : FilterCriteria) : void {static}
+  + printSortedApplications(sortedApplications : ArrayList<Application>, criterias : String[]) : void {static}
+  + printEditApplication(application : Application, index : int) : void {static}
+  + printDeleteApplication(application : Application, index : int) : void {static}
+  + printUndoSuccess() : void {static}
+  + printUnknownCommand() : void {static}
+  + printUpcomingDeadlines(upcomingApplications : ArrayList<Application>, numDays : int, remindDate : LocalDate) : void {static}
+}
+
+Ui --> Application
+Ui --> FilterCriteria
+Ui --> Scanner
+Ui --> LocalDate
+@enduml
