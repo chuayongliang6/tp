@@ -23,16 +23,14 @@
    - [Sort feature](#sort-feature)
    - [Undo feature](#undo-feature)
    - [Summary feature](#summary-feature)
-5. [Documentation, logging, testing, configuration, dev-ops](#documentation-logging-testing-configuration-dev-ops)
-6. [Appendix: Requirements](#appendix-requirements)
+5. [Appendix: Requirements](#appendix-requirements)
    - [Product scope](#product-scope)
    - [User stories](#user-stories)
    - [Use cases](#use-cases)
    - [Non-Functional Requirements](#non-functional-requirements)
    - [Glossary](#glossary)
-7. [Appendix: Instructions for manual testing](#appendix-instructions-for-manual-testing)
+6. [Appendix: Instructions for manual testing](#appendix-instructions-for-manual-testing)
    - [Launch and shutdown](#launch-and-shutdown)
-   - [Deleting an application](#deleting-an-application)
    - [Saving data](#saving-data)
 
 ---
@@ -88,16 +86,6 @@ The ***Architecture Diagram*** given above explains the high-level design of the
 * Common : A suite of utility classes (e.g.,ApplicationList, EditDetails, FilterCriteria) shared across all components.
   The sequence of interaction follows a clear flow: User input → UI → Logic (Parser) → Model manipulation → Storage
   persistence.
-
-## Application List component
-
-![application\_list.png](diagrams/application_list_diag.png)
-
-The ApplicationList component is a stateless utility class that functions as a logic middleware. 
-
-It does not maintain its own state or store the application data internally; instead, it provides a suite of pure functions that perform operations (adding, filtering, sorting, editing) on an ArrayList<Application> passed in by the caller. 
-
-This decoupling ensures that the data storage remains independent of the processing logic.
 
 ---
 
@@ -321,13 +309,67 @@ The `Parser` component is responsible for interpreting user input and converting
 
 ### Application component
 
-{Description of Application component will be added here.}
+The `Application` class represents a single internship application in the system.
+
+Each application stores the following attributes:
+
+- Company
+- Role
+- Deadline (optional)
+- Contact (optional)
+- Status
+
+---
+
+#### Key Design Features
+
+- The status is automatically initialized to `"Pending"` when a new application is created.
+- A copy constructor is implemented to support deep copying, which is essential for the undo feature.
+- Setter methods include validation to ensure data integrity.
+
+---
+
+#### Design Considerations
+
+##### Aspect: Default status initialization
+
+**Alternative 1 (Current Choice): Assign default status `"Pending"` in constructor**
+
+*Pros:*
+- Ensures all applications have a valid initial state
+- Prevents null or undefined status values
+- Simplifies logic across the application
+
+*Cons:*
+- Less flexibility if different defaults are needed in the future
+
+---
+
+**Alternative 2: Require user to specify status explicitly**
+
+*Pros:*
+- More flexible
+- Allows different workflows
+
+*Cons:*
+- Increases user effort
+- Higher risk of invalid or missing status
+
+**Rationale for Current Choice:**
+
+A default status simplifies the user experience and ensures consistency across all applications.
 
 ---
 
 ### Application List component
 
-{Description of Application List component will be added here.}
+![application\_list.png](diagrams/application_list_diag.png)
+
+The ApplicationList component is a stateless utility class that functions as a logic middleware. 
+
+It does not maintain its own state or store the application data internally; instead, it provides a suite of pure functions that perform operations (adding, filtering, sorting, editing) on an ArrayList<Application> passed in by the caller. 
+
+This decoupling ensures that the data storage remains independent of the processing logic.
 
 ---
 
@@ -726,57 +768,47 @@ This approach keeps validation within the model while command interpretation rem
 The `undo` command allows users to revert the most recent modification made to the application list.
 
 Supported commands:
+- add
+- edit
+- delete
 
-* add
-* edit
-* delete
+---
+
+#### Implementation
 
 Undo is implemented using a snapshot-based state restoration mechanism.
 
----
-
-#### Snapshot Mechanism
-
 Before executing any modifying command:
 
-1. A deep copy of the current `userApplications` list is created.
-2. The snapshot is pushed onto an undo history stack.
+1. A deep copy of the current `userApplications` list is created
+2. The snapshot is pushed onto an undo history stack
 
-When the user executes `undo`:
+When `undo` is executed:
 
-1. The most recent snapshot is popped from the stack.
-2. The application list is replaced with the snapshot.
-3. The restored state is written to storage.
-
-This guarantees the system returns to the exact state before the most recent change.
+1. The most recent snapshot is popped from the stack
+2. The current list is cleared and replaced with the snapshot
+3. The restored state is saved to storage
 
 ---
 
-#### Example Workflow
+#### Deep Copy Mechanism
 
-add c/Google r/SWE Intern
-delete 1
-undo
+A deep copy is used to prevent reference sharing between states.
 
-Execution flow:
-
-1. `add` stores a snapshot of the empty list then adds the application.
-2. `delete` stores a snapshot then removes the application.
-3. `undo` restores the previous snapshot.
-
-The deleted application reappears in the list.
+Each `Application` object is copied individually, ensuring that previous states remain unaffected by future changes.
 
 ---
 
-##### Sequence Diagram: Undo Command
+#### Error Handling
 
-![undo\_sequence\_diag.png](diagrams/undo_sequence_diag.png)
+- If no previous state exists, an error message is shown:
+  "No command to undo."
 
 ---
 
 #### Design Considerations
 
-##### Aspect 4: Undo Implementation
+##### Aspect: Undo implementation strategy
 
 **Alternative 1 (Current Choice): Snapshot-based restoration**
 
@@ -786,7 +818,9 @@ The deleted application reappears in the list.
 - Guarantees correct state restoration
 
 *Cons:*
-- Increased memory usage
+- Higher memory usage
+
+---
 
 **Alternative 2: Command-based reversal**
 
@@ -794,22 +828,25 @@ The deleted application reappears in the list.
 - More memory efficient
 
 *Cons:*
-- Significantly more complex
+- Complex implementation
 - Each command requires custom undo logic
 
-**Rationale for Current Choice:** The snapshot approach was chosen for simplicity and reliability. In a student project managing a relatively small number of internship applications, the minimal memory overhead of storing snapshots is acceptable, and the guarantee of correct state restoration outweighs the efficiency benefits of command-based reversal. This design ensures that any future modifications to commands don't inadvertently break undo functionality.
+---
+
+**Rationale for Current Choice:**
+
+The snapshot approach ensures correctness and simplicity, which is more suitable for a small-scale application.
+
+---
+##### Sequence Diagram: Undo Command
+
+![undo\_sequence\_diag.png](diagrams/undo_sequence_diag.png)
 
 ---
 
 ### Summary feature
 
 {Description of Summary feature implementation will be added here.}
-
----
-
-## Documentation, logging, testing, configuration, dev-ops
-
-{Documentation, logging, testing, configuration, and dev-ops information will be added here.}
 
 ---
 
@@ -915,13 +952,19 @@ interface.
 
 ### Launch and shutdown
 
-{Instructions for launching and shutting down the application will be added here.}
+**Launching the Application:**
 
----
+1. Open a terminal/command prompt in the directory containing `InternTrack.jar`
+2. Run: `java -jar InternTrack.jar`
+3. The application will display a welcome message and load any previously saved data from `./data/applications.txt`
+4. The terminal will be ready to accept commands
 
-### Deleting an application
+**Shutting Down the Application:**
 
-{Instructions for deleting an application will be added here.}
+1. Type `bye` at the command prompt
+2. Press Enter
+3. The application will save all data to `./data/applications.txt` and display a goodbye message
+4. The application will terminate and return to the command prompt
 
 ---
 

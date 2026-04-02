@@ -1,17 +1,52 @@
 @startuml
-actor User
-participant Ui
-participant InternTrack
-participant Parser
-participant ApplicationList
-participant Storage
+hide footbox
 
-User -> Ui : edit INDEX [FIELDS]
-Ui -> InternTrack : handleEditCommand()
-InternTrack -> Parser : parseEditIndex()
-InternTrack -> Parser : parseEditDetails()
-InternTrack -> ApplicationList : editApplication()
-InternTrack -> Storage : saveApplications()
-InternTrack -> Ui : printEditApplication()
+participant ":InternTrack" as InternTrack
+participant ":Parser" as Parser
+participant ":ApplicationList" as ApplicationList
+participant ":Ui" as Ui
+participant ":Storage" as Storage
+participant ":EditDetails" as EditDetails
 
+[-> InternTrack : handleCommand("edit ...", userApplications, undoHistory)
+activate InternTrack
+
+InternTrack -> InternTrack : handleEditCommand(line, userApplications, undoHistory)
+activate InternTrack
+
+InternTrack -> Parser : parseEditIndex(line)
+activate Parser
+Parser --> InternTrack : index
+deactivate Parser
+
+InternTrack -> Parser : parseEditDetails(line)
+activate Parser
+create "editDetails:EditDetails" as EditDetails
+Parser -> EditDetails : EditDetails(company, role, deadline, contact, status)
+activate EditDetails
+EditDetails --> Parser
+deactivate EditDetails
+Parser --> InternTrack : editDetails
+deactivate Parser
+
+InternTrack -> InternTrack : saveStateForUndo(userApplications, undoHistory)
+
+InternTrack -> ApplicationList : editApplication(userApplications, index, editDetails)
+activate ApplicationList
+ApplicationList --> InternTrack : updatedApplication
+deactivate ApplicationList
+
+InternTrack -> Ui : printEditApplication(updatedApplication, index)
+activate Ui
+Ui --> InternTrack
+deactivate Ui
+
+InternTrack -> Storage : saveApplications(userApplications)
+activate Storage
+Storage --> InternTrack
+deactivate Storage
+
+deactivate InternTrack
+[<-- InternTrack
+deactivate InternTrack
 @enduml

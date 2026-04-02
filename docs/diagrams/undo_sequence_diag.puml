@@ -1,14 +1,30 @@
 @startuml
-actor User
-participant Ui
-participant InternTrack
-participant ApplicationList
-participant Storage
+hide footbox
 
-User -> Ui : undo
-Ui -> InternTrack : handleUndoCommand()
-InternTrack -> ApplicationList : restorePreviousState()
-InternTrack -> Storage : saveApplications()
+participant ":InternTrack" as InternTrack
+participant ":Ui" as Ui
+participant ":Storage" as Storage
+
+[-> InternTrack : handleCommand("undo", userApplications, undoHistory)
+activate InternTrack
+
+InternTrack -> InternTrack : handleUndoCommand(userApplications, undoHistory)
+activate InternTrack
+InternTrack -> InternTrack : pop previousState from undoHistory
+InternTrack -> InternTrack : clear userApplications
+InternTrack -> InternTrack : addAll(previousState)
+
+InternTrack -> Storage : saveApplications(userApplications)
+activate Storage
+Storage --> InternTrack
+deactivate Storage
+
 InternTrack -> Ui : printUndoSuccess()
+activate Ui
+Ui --> InternTrack
+deactivate Ui
 
+deactivate InternTrack
+[<-- InternTrack
+deactivate InternTrack
 @enduml
