@@ -8,9 +8,9 @@ participant ApplicationList
 User -> Ui : sort by/CRITERIA [FLAG]
 Ui -> InternTrack : handleSortCommand()
 InternTrack -> Parser : parseSortCriteria()
-Parser -> InternTrack :
+Parser --> InternTrack :
 InternTrack -> ApplicationList : sortApplicationsByCriteria()
-ApplicationList -> InternTrack
-InternTrack ->Ui :printSortedApplications()
-Ui->User
+ApplicationList --> InternTrack
+InternTrack -->Ui :printSortedApplications()
+Ui-->User
 @enduml
