@@ -74,8 +74,7 @@ java -jar InternTrack.jar
 
 ![architecture\_diag.png](diagrams/architecture_diag.png)
 
-The ***Architecture Diagram*** given above explains the high-level design of the App. The architecture of **InternTrack
-** follows a layered design pattern with the following main components:
+The ***Architecture Diagram*** given above explains the high-level design of the App. The architecture of **InternTrack** follows a layered design pattern with the following main components:
 
 * InternTrack: Responsible for the app's lifecycle. It initializes components in the correct sequence at launch and
   ensures a clean shutdown by invoking necessary cleanup methods. It also orchestrates the application flow.
@@ -89,9 +88,72 @@ The ***Architecture Diagram*** given above explains the high-level design of the
 
 ---
 
-### Ui component
+### UI Component
 
-{Description of Ui component will be added here.}
+#### Overview
+
+The `UI` component handles the interaction between the user and the application. It is responsible for reading user input from the console and displaying formatted output, including status messages, error alerts, and the visual representation of application data.
+
+
+#### Class Diagram
+
+![UI_diag.png](diagrams/UI_diag.png)
+
+#### Design Considerations
+
+##### Aspect 1: Implementation of UI Methods (Static vs. Instance)
+
+**Alternative 1 (Current Choice):** Use static methods for all UI operations.
+
+* *Pros:*
+    * Easy access from any part of the application without needing to pass a `Ui` object reference.
+    * Simplifies the architecture for a Command Line Interface (CLI) where only one input/output stream exists.
+    * Reduces memory overhead as no instance needs to be managed.
+* *Cons:*
+    * Harder to unit test using mocks compared to instance-based dependency injection.
+    * Less flexible if the application were to support multiple concurrent user sessions or different output streams (e.g., GUI and CLI) simultaneously.
+
+**Alternative 2:** Use an instance-based approach where a `Ui` object is instantiated and passed to various commands.
+
+* *Pros:*
+    * Improved testability through dependency injection (e.g., passing a `ByteArrayOutputStream` for testing).
+    * Better adherence to Object-Oriented principles if state needs to be maintained within the UI.
+* *Cons:*
+    * Increases complexity by requiring the `Ui` instance to be passed through the call stack to every command that requires output.
+    * Adds boilerplate code for a relatively straightforward CLI application.
+
+**Rationale for Current Choice:** Given that InternTrack is a single-user CLI tool, the simplicity and global accessibility of static methods outweigh the benefits of an instance-based design. The current implementation provides a clean API for outputting data without cluttering command signatures.
+
+---
+
+##### Aspect 2: Handling of Data Formatting Logic
+
+**Alternative 1 (Current Choice):** Centralize formatting logic within the `Ui` class (e.g., the private `printApplication` method).
+
+* *Pros:*
+    * Ensures a consistent visual style across different commands (List, Find, Sort, Remind).
+    * The `Application` domain object remains "thin"—it stores data but doesn't need to know how to "draw" itself for a CLI.
+    * Easier to modify the global look and feel (e.g., changing borders or list numbering) in one location.
+* *Cons:*
+    * The `Ui` class becomes more complex as it needs to understand the internal structure of the `Application` and `FilterCriteria` objects to display them.
+
+**Alternative 2:** Have domain objects (like `Application`) provide their own formatted strings via `toString()` or a `toDisplayString()` method.
+
+* *Pros:*
+    * Better encapsulation of data; the object decides how it is represented.
+    * Reduces the number of parameters passed to `Ui` methods.
+* *Cons:*
+    * Blurs the line between the Model and the View, potentially cluttering domain logic with UI-specific formatting code (like ANSI colors or specific padding).
+
+**Rationale for Current Choice:** Centralizing formatting in the `Ui` component keeps the Model layer pure and focused on data integrity. By using a private helper method like `printApplication`, we achieve high reusability for displaying application details across various features like filtering and sorting while maintaining a single point of change for the UI design.
+
+#### Implementation Details
+
+The `Ui` component utilizes a `Scanner` for input and `System.out` for output. Key features include:
+
+* **Standardized Headers:** Uses `BORDER` and specific welcome/goodbye methods to maintain a professional CLI experience.
+* **Defensive Programming:** Employs `assert` statements to ensure that null lists or invalid application states are caught during development.
+* **Context-Aware Feedback:** Provides specific feedback for different actions (e.g., `printAddApplication` vs `printEditApplication`) to keep the user informed of the state of their data.
 
 ---
 
@@ -731,9 +793,54 @@ The `Parser#parseRemindDays()` method validates input and handles error cases:
 
 ---
 
-### Delete feature
+### Delete Feature
 
-{Description of Delete feature implementation will be added here.}
+The `delete` command allows users to remove an existing internship application from their tracking list using its displayed index.
+
+---
+
+#### Implementation
+
+The deletion process is managed by `InternTrack#handleDeleteCommand`. It coordinates the validation, state preservation, and removal logic.
+
+When a user executes a delete command:
+1.  **Index Parsing:** The `Parser` extracts the target index from the user's input string.
+2.  **Validation:** The system checks if the index is within the bounds of the current `userApplications` list.
+3.  **State Preservation:** `saveStateForUndo` is called to push a deep-copy snapshot of the list onto the `undoHistory` stack.
+4.  **Removal:** The application is removed from the `ArrayList<Application>`.
+5.  **Feedback & Persistence:** The `Ui` displays the details of the removed application, and `Storage` immediately updates the local data file to reflect the change.
+
+---
+
+#### Error Handling
+
+The delete feature specifically handles the following error cases via `InternTrackException`:
+
+* **Non-numeric Input:** If the user provides a non-integer (e.g., `delete abc`), the `Parser` throws an exception.
+* **Out of Bounds:** If the index is negative or greater than/equal to the list size (e.g., `delete 99` when only 5 applications exist), the command is aborted with the message:
+    > `"Invalid application index."`
+
+---
+
+#### Design Considerations
+
+##### Aspect: Deletion target identification
+
+**Alternative 1 (Current Choice): Index-based deletion**
+* *Pros:* Fast and unambiguous. Users can easily see the index from the `list` command output.
+* *Cons:* Requires the user to view the list first to ensure they have the correct index.
+
+**Alternative 2: Name-based deletion (e.g., `delete Google`)**
+* *Pros:* More intuitive for users who remember specific company names.
+* *Cons:* Complicated by duplicate company names (e.g., two different roles at Google). Requires additional logic to resolve which specific entry to delete.
+
+**Rationale for Current Choice:**
+Index-based deletion is standard for CLI (Command Line Interface) applications. It provides a "what you see is what you get" experience and avoids the complexity of handling duplicate string matches.
+
+---
+
+#### Implementation Detail: List Synchronization
+After the deletion, the application list is immediately re-saved to storage. This ensures that even if the program crashes or is closed immediately after a deletion, the data remains synchronized with the user's last action.
 
 ---
 
@@ -846,7 +953,81 @@ The snapshot approach ensures correctness and simplicity, which is more suitable
 
 ### Summary feature
 
-{Description of Summary feature implementation will be added here.}
+The `summary` command provides users with a high-level overview of their internship application progress, including quantitative metrics and time-sensitive reminders.
+
+---
+
+#### Implementation
+
+The summary generation is implemented as a utility-style execution within the `SummaryCommand` class. It processes the existing `userApplications` list in a single pass-through to aggregate data.
+
+When `summary` is executed:
+
+1. **Empty State Check**: The system checks if the application list is empty. If so, it terminates early with a notification.
+2. **Total Aggregation**: The total count of applications is retrieved directly from the list size.
+3. **Status Categorization**: 
+    * The command iterates through all `Application` objects.
+    * It uses a `HashMap<String, Integer>` to map status names to their respective frequencies.
+    * Null or empty statuses are grouped under an "Unknown" label.
+4. **Deadline Filtering**: 
+    * The command calculates a cutoff date (Current Date + 7 days).
+    * It filters applications where the deadline falls between `today` and the `cutoffDate`.
+    * The remaining time is calculated using `ChronoUnit.DAYS`.
+
+---
+
+#### Methods
+
+**Status Breakdown (`printStatusBreakdown`)**
+This helper method ensures that even if a user adds custom statuses, the summary remains dynamic. 
+
+**Deadline Tracking (`printUpcomingDeadlines`)**
+This method focuses on immediate priority. It ignores past deadlines to reduce clutter and only highlights tasks requiring action within the upcoming week.
+
+---
+
+#### Error Handling
+
+- **Empty List**: If the list contains no applications, the message "You currently have no internship applications to summarize" is displayed, and the helper methods are not called.
+- **Missing Data**: If an application is missing a deadline or status, the logic gracefully skips or categorizes them as "Unknown" to prevent `NullPointerException`.
+
+---
+
+#### Design Considerations
+
+##### Aspect: Summary generation strategy
+
+**Alternative 1 (Current Choice): Real-time calculation**
+
+*Pros:*
+- Guaranteed accuracy; the summary always reflects the most recent data.
+- Low memory overhead as no additional state is stored between commands.
+- Simple code maintenance.
+
+*Cons:*
+- Performance could worsen if the list grows larger (e.g., thousands of entries).
+
+---
+
+**Alternative 2: Cached summary / Observer pattern**
+
+*Pros:*
+- Instantaneous display for very large datasets.
+
+*Cons:*
+- Increased complexity; requires the summary to "listen" for changes in the application list.
+
+---
+
+**Rationale for Current Choice:**
+
+Since the typical user tracks a manageable number of internship applications (usually < 200), the calculation is nearly instantaneous and better than maintaining a cached state.
+
+---
+
+##### Sequence Diagram: Summary Command
+
+![summary_command_diag.png](diagrams/summary_command_diag.png)
 
 ---
 
