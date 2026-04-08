@@ -74,17 +74,21 @@ java -jar InternTrack.jar
 
 ![architecture\_diag.png](diagrams/architecture_diag.png)
 
+Some return arrows are omitted for clarity. The solid arrows are the real workflow of the application. Dashed arrows represent the dependency of some components to Common utilities
+
 The ***Architecture Diagram*** given above explains the high-level design of the App. The architecture of **InternTrack** follows a layered design pattern with the following main components:
 
-* InternTrack: Responsible for the app's lifecycle. It initializes components in the correct sequence at launch and
-  ensures a clean shutdown by invoking necessary cleanup methods. It also orchestrates the application flow.
-* UI (Ui): Handles user input and output via the command-line interface
-* Parser: Processes user commands and handle back to InternTrack
-* Model (Application): Maintains the in-memory data structure for applications
+* InternTrack: Acts as the central coordinator of the application, handles the main application loop and command dispatching.
+  Delegates tasks to other components such as Parser, ApplicationList, UI, and Storage.
+* UI (Ui): Responsible for all user interactions via the command line, reads user input and displays output messages, does not contain business logic.
+* Parser: Responsible for interpreting raw user input. Extracts command types and parameters (e.g., index, filters, fields) and return to InternTracker
+* Model (ApplicationList): ApplicationList contains and operates the core business logic
 * Storage (Storage): Manages persistence of application data to disk
-* Common : A suite of utility classes (e.g.,ApplicationList, EditDetails, FilterCriteria) shared across all components.
-  The sequence of interaction follows a clear flow: User input → UI → Logic (Parser) → Model manipulation → Storage
+* Common : A suite of utility classes (i.e. Application,EditDetails, FilterCriteria) shared across all components. They are responsible for supporting communication between components
+  The sequence of interaction follows a clear flow: User input → UI → InternTracker → Parser/ApplicationList/Storage → UI
   persistence.
+
+The architecture could be divided into few layers as the graph above, which is the User-interaction, orchestrator, logic processing and disk storage.
 
 ---
 
