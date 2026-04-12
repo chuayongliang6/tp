@@ -142,7 +142,7 @@ public class ApplicationList {
      * Encapsulates the date calculation logic to maintain proper abstraction levels.
      *
      * @param userApplications The list of applications to filter.
-     * @param numDays The number of days from today to consider as the deadline cutoff.
+     * @param numDays          The number of days from today to consider as the deadline cutoff.
      * @return A filtered list of applications with deadlines within the specified range.
      */
     public static ArrayList<Application> filterApplicationsByDaysAhead(
@@ -153,8 +153,9 @@ public class ApplicationList {
 
     /**
      * Archives an application at the given index.
+     *
      * @param userApplications The list containing the application.
-     * @param index The 1-based index of the application to archive.
+     * @param index            The 1-based index of the application to archive.
      * @return The archived Application object.
      * @throws InternTrackException If the index is invalid or the application is already archived.
      */
@@ -172,7 +173,7 @@ public class ApplicationList {
      * Restores an archived application at the given index.
      *
      * @param userApplications The list containing the application.
-     * @param index The 1-based index of the application to restore.
+     * @param index            The 1-based index of the application to restore.
      * @return The restored Application object.
      * @throws InternTrackException If the index is invalid or the application is not archived.
      */
@@ -303,19 +304,17 @@ public class ApplicationList {
      * </ul>
      *
      * @param userApplications The list of applications to sort.
-     * @param criteria An array specifying the sorting field and optional flags.
+     * @param criteria         An array specifying the sorting field and optional flags.
      * @return A new list of sorted applications.
      * @throws InternTrackException If the sorting criteria is invalid.
      */
-    public static ArrayList<Application> sortApplicationsByCriteria(
-            ArrayList<Application> userApplications, String[] criteria)
-            throws InternTrackException {
+    public static ArrayList<Application> sortApplicationsByCriteria(ArrayList<Application> userApplications,
+                                                                    String[] criteria) throws InternTrackException {
         assert criteria.length > 0 : "There must be some sorting criteria";
         assert criteria.length < 4 : "There are at most 3 criteria";
-
+        // Detect the flag
         boolean isDesc = false;
         boolean isNonnull = false;
-
         for (int i = 1; i < criteria.length; i++) {
             assert criteria[i].equals("DESC") || criteria[i].equals("NONNULL")
                     : "Unknown flag: " + criteria[i];
@@ -326,11 +325,10 @@ public class ApplicationList {
             }
         }
 
+        // Final flag use
         final boolean finalIsDesc = isDesc;
         final boolean finalIsNonnull = isNonnull;
-
         ArrayList<Application> sortedApplicationList = getActiveApplications(userApplications);
-
         if (criteria[0].equals("ROLE")) {
             sortedApplicationList.sort((a, b) -> {
                 int condition = a.getRole().compareToIgnoreCase(b.getRole());
@@ -351,9 +349,9 @@ public class ApplicationList {
             return sortedApplicationList;
         } else if (criteria[0].equals("CONTACT")) {
             sortedApplicationList.sort((a, b) -> {
+                // Check the contact criteria
                 String contactA = a.getContact();
                 String contactB = b.getContact();
-
                 if (contactA == null && contactB == null) {
                     return 0;
                 } else if (contactA == null) {
@@ -379,9 +377,9 @@ public class ApplicationList {
             return filteredApplicationList;
         } else if (criteria[0].equals("DEADLINE")) {
             sortedApplicationList.sort((a, b) -> {
+                // Check the deadline criteria
                 LocalDate deadlineA = a.getDeadline();
                 LocalDate deadlineB = b.getDeadline();
-
                 if (deadlineA == null && deadlineB == null) {
                     return 0;
                 } else if (deadlineA == null) {
@@ -389,7 +387,7 @@ public class ApplicationList {
                 } else if (deadlineB == null) {
                     return -1;
                 }
-
+                // Check if descending
                 int condition;
                 if (deadlineA.isEqual(deadlineB)) {
                     return 0;
@@ -441,7 +439,7 @@ public class ApplicationList {
      * Validates that the given 1-based index is within range.
      *
      * @param userApplications The application list.
-     * @param index The 1-based index to validate.
+     * @param index            The 1-based index to validate.
      * @throws InternTrackException If the index is out of range.
      */
     private static void validateIndex(ArrayList<Application> userApplications, int index)
@@ -456,7 +454,7 @@ public class ApplicationList {
      * Retrieves an application by its 1-based index after validating it.
      *
      * @param userApplications The application list.
-     * @param index The 1-based index of the application.
+     * @param index            The 1-based index of the application.
      * @return The application at the given index.
      * @throws InternTrackException If the index is invalid.
      */
