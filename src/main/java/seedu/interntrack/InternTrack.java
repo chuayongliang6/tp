@@ -283,9 +283,9 @@ public class InternTrack {
      * Handles the archive command by marking an application as archived.
      * Saves the current state for undo before performing the operation.
      *
-     * @param line Raw user input containing the index.
+     * @param line             Raw user input containing the index.
      * @param userApplications The current list of applications.
-     * @param undoHistory The undo stack storing previous states.
+     * @param undoHistory      The undo stack storing previous states.
      * @throws InternTrackException If the index is invalid or already archived.
      */
     private static void handleArchiveCommand(String line, ArrayList<Application> userApplications,
@@ -308,9 +308,9 @@ public class InternTrack {
      * Handles the unarchive command by restoring an archived application.
      * Saves the current state for undo before performing the operation.
      *
-     * @param line Raw user input containing the index.
+     * @param line             Raw user input containing the index.
      * @param userApplications The current list of applications.
-     * @param undoHistory The undo stack storing previous states.
+     * @param undoHistory      The undo stack storing previous states.
      * @throws InternTrackException If the index is invalid or not archived.
      */
     private static void handleUnarchiveCommand(String line, ArrayList<Application> userApplications,

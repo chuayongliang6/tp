@@ -3,7 +3,6 @@ package seedu.interntrack;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.logging.Logger;
 
 /**
  * Represents the user interface for handling input and output.
@@ -210,7 +209,8 @@ public class Ui {
     public static void printEditApplication(Application application, int index, EditDetails editDetails) {
         System.out.println("Nice! I've updated application " + index + ":");
         System.out.println("  " + application.toString());
-        if (!editDetails.getStatus().equals(DEFAULT_STATUS1)
+        if (editDetails.getStatus() != null
+                && !editDetails.getStatus().equals(DEFAULT_STATUS1)
                 && !editDetails.getStatus().equals(DEFAULT_STATUS2)
                 && !editDetails.getStatus().equals(DEFAULT_STATUS3)
                 && !editDetails.getStatus().equals(DEFAULT_STATUS4)) {
