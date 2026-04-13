@@ -395,7 +395,7 @@ public class Parser {
      * @param value        The raw text value to parse.
      * @param emptyMessage The error message to throw if the value is empty.
      * @return The trimmed text value.
-     * @throws InternTrackException If the value is empty.
+     * @throws InternTrackException If the value is empty or contains the pipe character.
      */
     private static String parseRequiredTextValue(String value, String emptyMessage) throws InternTrackException {
         String trimmedValue = value.trim();
@@ -404,8 +404,14 @@ public class Parser {
             throw new InternTrackException(emptyMessage);
         }
 
+        if (trimmedValue.contains("|")) {
+            logger.log(Level.WARNING, "Pipe character '|' found in input value: " + trimmedValue);
+            throw new InternTrackException("Input cannot contain the pipe character '|'. Please use a different character.");
+        }
+
         return trimmedValue;
     }
+
 
     /**
      * Parses a LocalDate value from a string.
