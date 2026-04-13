@@ -67,6 +67,7 @@ I contributed extensively to the User Guide by designing clear, structured, and 
 **Impact**
 - Improved usability by making command behaviour explicit and predictable
 - Enabled users to confidently use advanced features such as partial edits and undo operations
+
 ---
 
 ### Contributions to the Developer Guide
