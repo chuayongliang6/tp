@@ -462,7 +462,8 @@ public class Parser {
 
             int maxDays = YearMonth.of(year, month).lengthOfMonth();
             if (day > maxDays) {
-                return DATE_FORMAT_ERROR + "Invalid date: " + trimmedValue + " does not exist (this month has " + maxDays + " days).";
+                return DATE_FORMAT_ERROR + "Invalid date: " + trimmedValue
+                        + " does not exist (this month has " + maxDays + " days).";
             }
         } catch (NumberFormatException ignored) {
             // If parsing the components fails, fall back to generic error message
