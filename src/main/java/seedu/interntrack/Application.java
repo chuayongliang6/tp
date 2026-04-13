@@ -177,6 +177,26 @@ public class Application {
         this.isArchived = isArchived;
     }
 
+    /**
+     * Checks if this application is a duplicate of another application.
+     * Two applications are considered duplicates if they have the same company, role,
+     * deadline, and status (case-insensitive and whitespace-normalised).
+     *
+     * @param other The other application to compare with.
+     * @return Returns true if both applications are duplicates.
+     */
+    public boolean equals(Application other) {
+        if (other == null) {
+            return false;
+        }
+        boolean isSameCompany = company.trim().equalsIgnoreCase(other.company.trim());
+        boolean isSameRole = role.trim().equalsIgnoreCase(other.role.trim());
+        boolean isSameDeadline = (deadline == null && other.deadline == null)
+                || (deadline != null && deadline.equals(other.deadline));
+        boolean isSameStatus = status.trim().equalsIgnoreCase(other.status.trim());
+        return isSameCompany && isSameRole && isSameDeadline && isSameStatus;
+    }
+
     @Override
     public String toString() {
         String archiveLabel = isArchived ? "[Archived] " : "";
