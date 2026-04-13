@@ -2,6 +2,7 @@ package seedu.interntrack;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -93,6 +94,7 @@ public class ApplicationList {
         }
         if (editDetails.getStatus() != null) {
             application.setStatus(editDetails.getStatus());
+
         }
 
         logger.info("Updated application at index " + index + ": " + application);
@@ -132,7 +134,7 @@ public class ApplicationList {
                 continue;
             }
             String applicationValue = getTextFieldValue(application, criteria.getField());
-            if (applicationValue != null && applicationValue.equalsIgnoreCase(criteria.getTextValue())) {
+            if (matchesTextCriterion(applicationValue, criteria.getTextValue())) {
                 filteredApplications.add(application);
             }
         }
@@ -153,7 +155,8 @@ public class ApplicationList {
         ArrayList<Application> filteredApplications = new ArrayList<>();
         for (Application application : userApplications) {
             LocalDate applicationDeadline = application.getDeadline();
-            if (!application.isArchived() && applicationDeadline != null && !applicationDeadline.isAfter(deadline)) {
+            if (!application.isArchived() && applicationDeadline != null 
+                    && !applicationDeadline.isAfter(deadline)) {
                 filteredApplications.add(application);
             }
         }
@@ -164,16 +167,26 @@ public class ApplicationList {
 
     /**
      * Filters applications with deadlines on or before the specified number of days from today.
-     * Encapsulates the date calculation logic to maintain proper abstraction levels.
+     * Excludes applications with past deadlines (before today) for the remind feature.
+     * Note: numDays is guaranteed to be positive by Parser.parseRemindDays().
      *
      * @param userApplications The list of applications to filter.
-     * @param numDays          The number of days from today to consider as the deadline cutoff.
-     * @return A filtered list of applications with deadlines within the specified range.
+     * @param numDays          The number of days from today to consider as the deadline cutoff (always > 0).
+     * @return A filtered list of applications with deadlines within the specified range and not in the past.
      */
     public static ArrayList<Application> filterApplicationsByDaysAhead(
             ArrayList<Application> userApplications, int numDays) {
-        LocalDate cutoffDate = LocalDate.now().plusDays(numDays);
-        return filterApplicationsOnOrBefore(userApplications, cutoffDate);
+        LocalDate today = LocalDate.now();
+        LocalDate cutoffDate = today.plusDays(numDays);
+        ArrayList<Application> results = new ArrayList<>();
+
+        for (Application app : userApplications) {
+            if (isWithinDateRange(app, today, cutoffDate)) {
+                results.add(app);
+            }
+        }
+        logger.info("Retrieved " + results.size() + " reminders for the next " + numDays + " days.");
+        return results;
     }
 
     /**
@@ -477,6 +490,38 @@ public class ApplicationList {
         default:
             return null;
         }
+    }
+
+    /**
+     * Checks whether an application's text field contains the filter input, ignoring case.
+     *
+     * @param applicationValue The text field value from the application.
+     * @param criterionValue   The text entered by the user for filtering.
+     * @return True if the application value contains the criterion value, ignoring case.
+     */
+    private static boolean matchesTextCriterion(String applicationValue, String criterionValue) {
+        if (applicationValue == null || criterionValue == null) {
+            return false;
+        }
+
+        return applicationValue.toLowerCase(Locale.ROOT).contains(criterionValue.toLowerCase(Locale.ROOT));
+    }
+
+    /**
+     * Returns true if an application is active and its deadline falls within the specified range.
+     * Used by the Remind feature to determine which applications to display.
+     *
+     * @param app The application to check.
+     * @param start The start date (inclusive) of the range.
+     * @param end The end date (inclusive) of the range.
+     * @return True if the application is not archived and the deadline is within the range.
+     */
+    private static boolean isWithinDateRange(Application app, LocalDate start, LocalDate end) {
+        LocalDate deadline = app.getDeadline();
+        if (app.isArchived() || deadline == null) {
+            return false;
+        }
+        return !deadline.isBefore(start) && !deadline.isAfter(end);
     }
 
     /**
