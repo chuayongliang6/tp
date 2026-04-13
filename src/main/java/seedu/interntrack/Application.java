@@ -178,24 +178,66 @@ public class Application {
     }
 
     /**
-     * Checks if this application is a duplicate of another application.
-     * Two applications are considered duplicates if they have the same company, role,
-     * deadline, and status (case-insensitive and whitespace-normalised).
+     * Returns true if this application is a duplicate of another application.
+     * Comparisons are based on company and role (case-insensitive) and must
+     * have matching deadlines if they are provided. Contact and status
+     * fields are ignored for duplicate detection.
      *
      * @param other The other application to compare with.
-     * @return Returns true if both applications are duplicates.
+     * @return True if this application is a duplicate of the other; false otherwise.
      */
     public boolean equals(Application other) {
         if (other == null) {
             return false;
         }
-        boolean isSameCompany = company.trim().equalsIgnoreCase(other.company.trim());
-        boolean isSameRole = role.trim().equalsIgnoreCase(other.role.trim());
-        boolean isSameDeadline = (deadline == null && other.deadline == null)
-                || (deadline != null && deadline.equals(other.deadline));
-        boolean isSameStatus = status.trim().equalsIgnoreCase(other.status.trim());
-        return isSameCompany && isSameRole && isSameDeadline && isSameStatus;
+
+        boolean isSameCompany = normaliseText(company).equalsIgnoreCase(normaliseText(other.company));
+        boolean isSameRole = normaliseText(role).equalsIgnoreCase(normaliseText(other.role));
+
+        if (!isSameCompany || !isSameRole) {
+            return false;
+        }
+
+        if (!isDeadlineMatch(other)) {
+            return false;
+        }
+
+        assert isSameCompany && isSameRole && isDeadlineMatch(other)
+                : "Duplicate detection postcondition violated";
+
+        return true;
     }
+
+    /**
+     * Returns text with trimmed whitespace and extra internal spaces removed.
+     *
+     * @param text The text to normalise.
+     * @return The normalised text.
+     */
+    private static String normaliseText(String text) {
+        return text.trim().replaceAll("\\s+", " ");
+    }
+
+    /**
+     * Returns true if the deadlines of two applications match.
+     * Two deadlines match if both are null or both represent the same date.
+     * If only one deadline is null, they do not match.
+     *
+     * @param other The other application to compare with.
+     * @return True if deadlines match, false otherwise.
+     */
+    private boolean isDeadlineMatch(Application other) {
+        // If both are null, they match
+        if (deadline == null && other.deadline == null) {
+            return true;
+        }
+        // If only one is null, they don't match
+        if (deadline == null || other.deadline == null) {
+            return false;
+        }
+        return deadline.equals(other.deadline);
+    }
+
 
     @Override
     public String toString() {
