@@ -231,7 +231,7 @@ public class Parser {
      * @throws InternTrackException If the index is missing or invalid.
      */
     public static int parseDeleteIndex(String input) throws InternTrackException {
-        String[] parts = input.trim().split("\\s+", 2);
+        String[] parts = input.trim().split("\\s+", 3);
 
         if (parts.length != 2) {
             throw new InternTrackException("Use format: delete INDEX");
@@ -257,7 +257,7 @@ public class Parser {
      * @throws InternTrackException If the index is missing or invalid.
      */
     private static int parsePositiveIndex(String input, String formatError) throws InternTrackException {
-        String[] parts = input.trim().split("\\s+", 2);
+        String[] parts = input.trim().split("\\s+", 3);
 
         if (parts.length != 2) {
             throw new InternTrackException(formatError);
