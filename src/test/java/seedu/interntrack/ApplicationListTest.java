@@ -131,7 +131,8 @@ public class ApplicationListTest {
                 () -> ApplicationList.editApplication(testList, 2,
                         new EditDetails("Meta", null, null, null, null)));
 
-        assertEquals("Active application index is out of range. Use list to view the available active application indices.", exception.getMessage());
+        assertEquals("Active application index is out of range. Use list to view the available "
+                + "active application indices.", exception.getMessage());
     }
 
     @Test
